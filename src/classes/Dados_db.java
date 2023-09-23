@@ -60,31 +60,6 @@ public class Dados_db {
         }
     }
 
-//    public Dados_db() {
-//        try {
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            String db = "jdbc:mysql://localhost/faturacao";
-//            cnn = DriverManager.getConnection(db, "root", "PerfectWorld2023@$");
-//        } catch (Exception e) {
-//            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
-//        }
-//    }
-//    public boolean validarUsuario(String usuario, String senha) {
-//        try {
-//            String sql = "select (1) from usuarios where idUsuario='"
-//                    + usuario + "'and senha ='" + senha + "'";
-//            Statement st = cnn.createStatement();
-//            ResultSet rs = st.executeQuery(sql);
-//            if (rs.next()) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
-//            return false;
-//        }
-//    }
     public int getPerfil(String usuario) {
         try {
             String sql = "select idPerfil from usuarios where idUsuario='"
