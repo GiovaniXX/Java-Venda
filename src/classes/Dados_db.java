@@ -1,11 +1,15 @@
 package classes;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,20 +17,36 @@ public class Dados_db {
 
     private Connection cnn;
 
+    private static final String PROPERTIES_FILE = "E:/PROJETOS JAVA 2023/NetBeans/config.properties";
+    private static String dbUrl;
+    private static String dbUsername;
+    private static String dbPassword;
+
     public Dados_db() {
+        loadDatabaseProperties();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String db = "jdbc:mysql://localhost/faturacao";
-            cnn = DriverManager.getConnection(db, "root", "PerfectWorld2023@$");
-        } catch (Exception e) {
-            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
+            cnn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+        } catch (ClassNotFoundException | SQLException e) {
+            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, "Erro ao estabelecer conexão com o banco de dados", e);
         }
     }
 
-    public boolean validarUsuario(String usuario, String senha) {
+    private void loadDatabaseProperties() {
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(PROPERTIES_FILE)) {
+            properties.load(input);
+            dbUrl = properties.getProperty("db.url");
+            dbUsername = properties.getProperty("db.username");
+            dbPassword = properties.getProperty("db.password");
+        } catch (IOException e) {
+            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, "Erro ao carregar arquivo de propriedades", e);
+        }
+    }
+
+    public Boolean validarUsuario(String usuario, String senha) {
         try {
-            String sql = "select (1) from usuarios where idUsuario='"
-                    + usuario + "'and senha ='" + senha + "'";
+            String sql = "select (1) from usuarios where idUsuario='" + usuario + "' and senha ='" + senha + "'";
             Statement st = cnn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
@@ -34,12 +54,37 @@ public class Dados_db {
             } else {
                 return false;
             }
-        } catch (Exception e) {
-            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
+        } catch (SQLException e) {
+            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, "Erro ao validar usuário", e);
             return false;
         }
     }
 
+//    public Dados_db() {
+//        try {
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            String db = "jdbc:mysql://localhost/faturacao";
+//            cnn = DriverManager.getConnection(db, "root", "PerfectWorld2023@$");
+//        } catch (Exception e) {
+//            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
+//        }
+//    }
+//    public boolean validarUsuario(String usuario, String senha) {
+//        try {
+//            String sql = "select (1) from usuarios where idUsuario='"
+//                    + usuario + "'and senha ='" + senha + "'";
+//            Statement st = cnn.createStatement();
+//            ResultSet rs = st.executeQuery(sql);
+//            if (rs.next()) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } catch (Exception e) {
+//            Logger.getLogger(Dados_db.class.getName()).log(Level.SEVERE, null, e);
+//            return false;
+//        }
+//    }
     public int getPerfil(String usuario) {
         try {
             String sql = "select idPerfil from usuarios where idUsuario='"
