@@ -531,6 +531,9 @@ public class FrmClientes extends javax.swing.JInternalFrame {
     private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
         cliAtual = msDados_db.numeroClientes() - 1;
         mostrarRegistro();
+        
+        int id = evt.getID();
+        System.out.println("ID do evento: " + id);
     }//GEN-LAST:event_btnUltimoActionPerformed
 
     private void btnProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProximoActionPerformed
